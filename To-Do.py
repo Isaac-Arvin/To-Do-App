@@ -1,3 +1,6 @@
+import csv
+import msvcrt
+
 # This program is a ToDo task manager
 def main():
     choice = 0
@@ -6,8 +9,8 @@ def main():
         if choice == "1":
             addTask()
             #TODO
-        #elif choice == "2":
-         #   viewTasks()
+        elif choice == "2":
+            viewTasks()
         #elif choice == "3":
          #   markTaskCompleted()
         #elif choice == "4":
@@ -15,11 +18,34 @@ def main():
         else:
             print("Invalid choice. Please try again.")
 
+def viewTasks():
+    rows = []
+    with open("data.csv", "r", newline = '') as f:
+        # Assign contents to the object returned by DictReader
+        contents = csv.DictReader(f)
+        # Iterate through the row in the object
+        for row in contents:
+            print("Task: " + row["Task"], " - Status: " + row["Status"], sep = '')
+            if any(row.values()):
+                rows.append(row)
+    if not rows:
+        # Print no tasks and ask for a prompt to reloop
+        print("You have nothing to do!\n")
+    # Give the user time to read the tasks and status
+    print("Press any key to continue...")
+    msvcrt.getch()
 # Add a task to the "data.txt" file
 def addTask():
     task = input("Enter tasks name: ")
-    with open("data.txt", "a") as f:
-        f.write(task + "\n")
+
+    with open("data.csv", "r") as f:
+        if not f.read():
+            with open("data.csv", "a") as writer:
+                writer.write("Task,Status\n")
+
+    # with will automatically close the file after executing
+    with open("data.csv", "a") as f:
+        f.write(task + ",Incomplete\n")
     return "The task has been added!"
 
 if __name__ == "__main__":
