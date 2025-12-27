@@ -5,37 +5,52 @@ import os
 # This program is a ToDo task manager
 def main():
     choice = 0
-    while choice != "1" or choice != "2" or choice != "3" or choice != "4":
-        choice = input("Hello! What would you like to do? \n1. Add a new task\n2. View Tasks\n3. Mark a task completed\n4. Delete a task\nChoice: ")
+
+    while choice != "1" or choice != "2" or choice != "3" or choice != "4" or choice != "5":
+        choice = input("Hello! What would you like to do? \n1. Add a new task\n2. View Tasks\n3. Mark a task completed\n4. Delete a task\n5. Close program\nChoice: ")
         if choice == "1":
             addTask()
+
         elif choice == "2":
             viewTasks()
+
         elif choice == "3":
             markTaskComplete()
-        #elif choice == "4":
-            #deleteTask()
+
+        elif choice == "4":
+            deleteTask()
+        
+        elif choice == "5":
+            print("Goodbye!")
+            return
+        
         else:
             clearScreen()
             print("Invalid choice. Please try again.")
 
 def viewTasks():
     rows = []
+
     with open("data.csv", "r", newline = '') as f:
         # Assign contents to the object returned by DictReader
         contents = csv.DictReader(f)
+
         # Iterate through the row in the object
         for row in contents:
             print("Task: " + row["Task"], " - Status: " + row["Status"], sep = '')
+
             if any(row.values()):
                 rows.append(row)
+
     if not rows:
         # Print no tasks and ask for a prompt to reloop
         clearScreen()
         print("You have nothing to do!\n")
+
     # Give the user time to read the tasks and status
     print("Press any key to continue...")
     msvcrt.getch()
+
 # Add a task to the "data.txt" file
 def addTask():
     task = input("Enter tasks name: ")
@@ -97,7 +112,47 @@ def markTaskComplete():
                     value["Status"] = "Complete"
 
             f.write(value["Task"] + "," + value["Status"] + "\n")
-    
+
+def deleteTask():
+    taskList = []
+    n = 1
+    delete = 0
+    counter = 1
+
+    with open("data.csv", "r", newline = '') as f:
+        tasks = csv.DictReader(f)
+        clearScreen()
+        print("Which task would you like to remove? ")
+
+        for task in tasks:
+            if not task["Task"] == "Task":
+                print(f"Task {counter}: {task["Task"]} - {task["Status"]}")
+                taskList.append(task)
+                counter += 1
+        while delete < 1 or delete > len(taskList):
+            print(len(taskList))
+            print(delete)
+            try:
+                delete = int(input("Choice: "))
+            except:
+                continue
+
+            print("Please enter a valid response! ")
+
+            for z in taskList:
+                print(f"Task {taskList.index(z)+1}: {z["Task"]} - {z["Status"]}")
+
+    with open("data.csv", "w") as f:
+        f.write("Task,Status\n")
+        for task in taskList:
+            if n != delete:
+                f.write(task["Task"] + "," + task["Status"] + "\n")
+                n = n + 1
+            else:
+                n = n + 1
+    print("Task deleted! Press any key to continue...")
+    msvcrt.getch()
+
 def clearScreen():
     print("\033c", end="")
     
