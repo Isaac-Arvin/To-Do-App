@@ -4,29 +4,43 @@ import os
 
 # This program is a ToDo task manager
 def main():
+    # call choiceMade to recieve an input and match it to a function
+    while (True):
+        match choiceMade():
+            case 1:
+                addTask()
+            case 2:
+                viewTasks()
+            case 3:
+                markTaskComplete()
+            case 4:
+                deleteTask()
+            case 5:
+                return
+
+def choiceMade():
     choice = 0
+    menu = (
+        "Hello! What would you like to do? \n" 
+        "1. Add a new task \n" 
+        "2. View Tasks \n" 
+        "3. Mark a task completed \n" 
+        "4. Delete a task \n" 
+        "5. Close program \n"
+        "Choice: ")
 
-    while choice != "1" or choice != "2" or choice != "3" or choice != "4" or choice != "5":
-        choice = input("Hello! What would you like to do? \n1. Add a new task\n2. View Tasks\n3. Mark a task completed\n4. Delete a task\n5. Close program\nChoice: ")
-        if choice == "1":
-            addTask()
+    while True:
+        choice = input(menu)
+        try:
+            choice = int(choice)
+        except ValueError:
+            continue
 
-        elif choice == "2":
-            viewTasks()
+        if choice in {1, 2, 3, 4, 5}:
+            return choice
 
-        elif choice == "3":
-            markTaskComplete()
-
-        elif choice == "4":
-            deleteTask()
-        
-        elif choice == "5":
-            print("Goodbye!")
-            return
-        
-        else:
-            clearScreen()
-            print("Invalid choice. Please try again.")
+        clearScreen()
+        print("Invalid choice. Please try again.")
 
 def viewTasks():
     rows = []
@@ -130,8 +144,6 @@ def deleteTask():
                 taskList.append(task)
                 counter += 1
         while delete < 1 or delete > len(taskList):
-            print(len(taskList))
-            print(delete)
             try:
                 delete = int(input("Choice: "))
             except:
@@ -156,5 +168,11 @@ def deleteTask():
 def clearScreen():
     print("\033c", end="")
     
+def ensure_file(path):
+    if not os.path.exists(path):
+        with open(path, "w") as f:
+            pass
+
 if __name__ == "__main__":
+    ensure_file("data.csv")
     main()
