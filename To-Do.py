@@ -8,11 +8,15 @@ def main():
     while (True):
         match choiceMade():
             case 1:
-                addTask()
+                print(addTask())
             case 2:
+                clearScreen()
                 viewTasks()
+                clearScreen()
             case 3:
+                clearScreen()
                 markTaskComplete()
+                clearScreen()
             case 4:
                 deleteTask()
             case 5:
@@ -77,6 +81,7 @@ def addTask():
     # with will automatically close the file after executing
     with open("data.csv", "a") as f:
         f.write(task + ",Incomplete\n")
+    clearScreen()
     return "The task has been added!"
 
 def markTaskComplete():
@@ -146,10 +151,12 @@ def deleteTask():
         while delete < 1 or delete > len(taskList):
             try:
                 delete = int(input("Choice: "))
-            except:
+            except ValueError:
                 continue
 
-            print("Please enter a valid response! ")
+            if delete < 1 or delete > len(taskList):
+                clearScreen()
+                print("Please enter a valid response! ")
 
             for z in taskList:
                 print(f"Task {taskList.index(z)+1}: {z["Task"]} - {z["Status"]}")
